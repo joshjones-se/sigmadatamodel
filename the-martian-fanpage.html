@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Martian — Fan Page</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+
+    :root {
+      --mars-red: #c0392b;
+      --mars-orange: #e67e22;
+      --mars-dust: #d4956a;
+      --deep-space: #050a14;
+      --space-blue: #0d1b2e;
+      --star-white: #e8f4fc;
+      --text-muted: #8fa3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--deep-space);
+      color: var(--star-white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── Stars background ─── */
+    #stars-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(5, 10, 20, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(192, 57, 43, 0.3);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--mars-orange);
+      letter-spacing: 0.15em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--mars-orange);
+    }
+
+    /* ─── Hero ─── */
+    #hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      background: radial-gradient(ellipse at 50% 60%, rgba(192, 57, 43, 0.18) 0%, transparent 70%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.4em;
+      color: var(--mars-orange);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 0%, var(--mars-dust) 50%, var(--mars-red) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .hero-subtitle {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      max-width: 500px;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+
+    .hero-tagline {
+      margin-top: 2.5rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      color: var(--mars-orange);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+    }
+
+    .hero-buttons {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.1s forwards;
+    }
+
+    .btn {
+      padding: 0.85rem 2.2rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--mars-red);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #e74c3c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(192, 57, 43, 0.5);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--star-white);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--mars-orange);
+      color: var(--mars-orange);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      margin-top: 5rem;
+      display: flex;
+      gap: 4rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.3s forwards;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--mars-orange);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+
+    /* ─── Sections ─── */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--mars-orange);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── Synopsis ─── */
+    #synopsis {
+      background: linear-gradient(180deg, transparent, rgba(13, 27, 46, 0.8), transparent);
+    }
+
+    .synopsis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .synopsis-text p {
+      color: var(--text-muted);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+      font-size: 1.02rem;
+    }
+
+    .synopsis-text p strong {
+      color: var(--star-white);
+    }
+
+    .mars-planet {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .planet-sphere {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        #e67e22 0%,
+        #c0392b 30%,
+        #922b21 60%,
+        #5d1a14 100%
+      );
+      box-shadow:
+        -20px -20px 60px rgba(0,0,0,0.8) inset,
+        0 0 80px rgba(192, 57, 43, 0.4),
+        0 0 160px rgba(192, 57, 43, 0.15);
+      animation: rotatePlanet 30s linear infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .planet-sphere::before {
+      content: '';
+      position: absolute;
+      top: 30%; left: 10%;
+      width: 40%; height: 8%;
+      background: rgba(0,0,0,0.25);
+      border-radius: 50%;
+      transform: rotate(-15deg);
+    }
+
+    .planet-sphere::after {
+      content: '';
+      position: absolute;
+      top: 55%; left: 25%;
+      width: 55%; height: 6%;
+      background: rgba(0,0,0,0.2);
+      border-radius: 50%;
+      transform: rotate(-10deg);
+    }
+
+    .planet-ring {
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      border: 1px solid rgba(230, 126, 34, 0.15);
+      animation: rotatePlanet 60s linear infinite reverse;
+    }
+
+    /* ─── Quotes ─── */
+    #quotes {
+      background: rgba(13, 27, 46, 0.4);
+    }
+
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .quote-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+
+    .quote-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(230, 126, 34, 0.3);
+    }
+
+    .quote-mark {
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--mars-orange);
+      opacity: 0.4;
+      font-family: Georgia, serif;
+      position: absolute;
+      top: 0.5rem;
+      left: 1.2rem;
+    }
+
+    .quote-text {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--star-white);
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    .quote-attribution {
+      margin-top: 1.2rem;
+      font-size: 0.78rem;
+      color: var(--mars-orange);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* ─── Cast ─── */
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .cast-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.25s;
+    }
+
+    .cast-card:hover {
+      background: rgba(192, 57, 43, 0.1);
+      border-color: rgba(192, 57, 43, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .cast-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--mars-red), var(--mars-orange));
+      color: white;
+    }
+
+    .cast-actor {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--star-white);
+    }
+
+    .cast-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ─── Timeline ─── */
+    #mission {
+      background: linear-gradient(180deg, transparent, rgba(192, 57, 43, 0.05), transparent);
+    }
+
+    .timeline {
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--mars-orange), var(--mars-red), transparent);
+    }
+
+    .timeline-item {
+      padding-left: 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 0.4rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--mars-orange);
+      box-shadow: 0 0 12px rgba(230, 126, 34, 0.6);
+    }
+
+    .timeline-sol {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      color: var(--mars-orange);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .timeline-event {
+      font-size: 1rem;
+      color: var(--star-white);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-detail {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── Facts ─── */
+    #facts {
+      background: rgba(13, 27, 46, 0.6);
+    }
+
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .fact-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left: 3px solid var(--mars-orange);
+      border-radius: 4px 8px 8px 4px;
+      padding: 1.5rem;
+      transition: background 0.25s;
+    }
+
+    .fact-card:hover {
+      background: rgba(230, 126, 34, 0.07);
+    }
+
+    .fact-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .fact-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--mars-orange);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .fact-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--mars-orange);
+      margin-bottom: 1rem;
+    }
+
+    .footer-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .footer-disclaimer {
+      margin-top: 1.5rem;
+      font-size: 0.72rem;
+      color: rgba(143, 163, 184, 0.5);
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192, 57, 43, 0.3), transparent);
+      margin: 0 auto;
+    }
+
+    /* ─── Animations ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes rotatePlanet {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ─── Scroll reveal ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s, transform 0.7s;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .synopsis-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .mars-planet { order: -1; }
+      .hero-stats { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-logo" href="#hero">THE MARTIAN</a>
+    <ul class="nav-links">
+      <li><a href="#synopsis">Synopsis</a></li>
+      <li><a href="#quotes">Quotes</a></li>
+      <li><a href="#cast">Cast</a></li>
+      <li><a href="#mission">Mission Log</a></li>
+      <li><a href="#facts">Facts</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <p class="hero-eyebrow">A Fan Tribute</p>
+    <h1 class="hero-title">THE<br>MARTIAN</h1>
+    <p class="hero-subtitle">Directed by Ridley Scott &bull; 2015 &bull; Based on the novel by Andy Weir</p>
+    <p class="hero-tagline">Help is only 140 million miles away</p>
+    <div class="hero-buttons">
+      <a href="#synopsis" class="btn btn-primary">Explore the Mission</a>
+      <a href="#quotes" class="btn btn-secondary">Best Quotes</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-value">$630M</div>
+        <div class="stat-label">Box Office</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Oscar Nominations</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">91%</div>
+        <div class="stat-label">Rotten Tomatoes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Sol 549</div>
+        <div class="stat-label">Days Stranded</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Synopsis -->
+  <section id="synopsis">
+    <div class="section-container">
+      <div class="synopsis-grid">
+        <div class="synopsis-text reveal">
+          <p class="section-label">About the Film</p>
+          <h2 class="section-title">Stranded. Alone.<br>140 Million Miles from Home.</h2>
+          <p>During a manned mission to Mars, astronaut <strong>Mark Watney</strong> is presumed dead after a fierce storm and left behind by his crew. But Watney has survived and finds himself stranded on the hostile, barren planet.</p>
+          <p>With only meager supplies, Watney must draw upon his ingenuity, wit, and spirit to subsist and find a way to signal to Earth that he is alive. Meanwhile, NASA and a team of international scientists work tirelessly to bring him home.</p>
+          <p>Directed by <strong>Ridley Scott</strong> and starring <strong>Matt Damon</strong>, the film is a triumphant celebration of human resilience, science, and the will to survive. It reminds us that when the universe conspires against you, the only option is to <em>science the shit out of it.</em></p>
+        </div>
+        <div class="mars-planet reveal">
+          <div class="planet-ring"></div>
+          <div class="planet-sphere"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Quotes -->
+  <section id="quotes">
+    <div class="section-container">
+      <p class="section-label reveal">Memorable Lines</p>
+      <h2 class="section-title reveal">Iconic Quotes</h2>
+      <div class="quotes-grid">
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">I'm gonna have to science the shit out of this.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">At some point, everything's gonna go south on you and you're going to say, this is it. This is how I end. Now you can either accept that, or you can get to work.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">Every human being has a basic instinct: to help each other out. If a hiker gets lost in the mountains, people will coordinate a search. If a train crashes, people will line up to give blood.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">I don't want to come off as arrogant here, but I'm the greatest botanist on this planet.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">Mars will come to fear my botany powers.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+        <div class="quote-card reveal">
+          <div class="quote-mark">&ldquo;</div>
+          <p class="quote-text">In the face of overwhelming odds, I'm left with only one option: I'm gonna have to science the shit out of this.</p>
+          <p class="quote-attribution">— Mark Watney</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Cast -->
+  <section id="cast">
+    <div class="section-container">
+      <p class="section-label reveal">The Crew</p>
+      <h2 class="section-title reveal">Cast & Characters</h2>
+      <div class="cast-grid">
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">MD</div>
+          <div class="cast-actor">Matt Damon</div>
+          <div class="cast-role">Mark Watney</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">JD</div>
+          <div class="cast-actor">Jessica Chastain</div>
+          <div class="cast-role">Commander Lewis</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">KW</div>
+          <div class="cast-actor">Kristen Wiig</div>
+          <div class="cast-role">Annie Montrose</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">JS</div>
+          <div class="cast-actor">Jeff Daniels</div>
+          <div class="cast-role">Teddy Sanders</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">MC</div>
+          <div class="cast-actor">Michael Peña</div>
+          <div class="cast-role">Alex Martinez</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">SE</div>
+          <div class="cast-actor">Sean Bean</div>
+          <div class="cast-role">Mitch Henderson</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">CB</div>
+          <div class="cast-actor">Chiwetel Ejiofor</div>
+          <div class="cast-role">Vincent Kapoor</div>
+        </div>
+
+        <div class="cast-card reveal">
+          <div class="cast-avatar">DG</div>
+          <div class="cast-actor">Donald Glover</div>
+          <div class="cast-role">Rich Purnell</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Mission Log / Timeline -->
+  <section id="mission">
+    <div class="section-container">
+      <p class="section-label reveal">Survival Chronicle</p>
+      <h2 class="section-title reveal">Mission Log</h2>
+      <div class="timeline">
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 6</div>
+          <div class="timeline-event">The Storm. Mission Abort.</div>
+          <div class="timeline-detail">A catastrophic dust storm forces the Ares 3 crew to abort the mission. Mark Watney is struck by debris and left for dead. The crew launches for Earth.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 7</div>
+          <div class="timeline-event">Watney Awakens</div>
+          <div class="timeline-detail">Mark regains consciousness alone on Mars. With no communications and dwindling supplies, he begins assessing his situation inside the HAB.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 14</div>
+          <div class="timeline-event">The Potato Farm Begins</div>
+          <div class="timeline-detail">Using Martian soil, crew waste, and sheer ingenuity, Mark begins growing potatoes inside the HAB — enough to extend his survival by years.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 63</div>
+          <div class="timeline-event">NASA Spots Watney from Orbit</div>
+          <div class="timeline-detail">Satellite imagery analyst Mindy Park notices movement near the Ares 3 HAB. NASA realizes Watney is alive and begins emergency planning.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 100</div>
+          <div class="timeline-event">Communication Restored via Pathfinder</div>
+          <div class="timeline-detail">Watney drives to the Pathfinder rover landing site and repurposes it to establish a rudimentary ASCII communication channel with Earth.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 461</div>
+          <div class="timeline-event">HAB Breach — Crop Catastrophe</div>
+          <div class="timeline-detail">An airlock failure destroys the potato crop. With resupply options delayed, Watney must further ration supplies and begin the long drive to Schiaparelli crater.</div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-sol">Sol 549</div>
+          <div class="timeline-event">Rescue — Return to the Hermes</div>
+          <div class="timeline-detail">In a daring maneuver, Watney launches in a stripped-down MAV. Commander Lewis tethers him 70 meters above Mars. Against all odds, he makes it home.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Fun Facts -->
+  <section id="facts">
+    <div class="section-container">
+      <p class="section-label reveal">Behind the Scenes</p>
+      <h2 class="section-title reveal">Film Facts</h2>
+      <div class="facts-grid">
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">📚</div>
+          <div class="fact-title">Born as a Blog</div>
+          <div class="fact-body">Andy Weir originally self-published The Martian in 2011 as free chapters on his personal website before it became a bestselling novel.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🌱</div>
+          <div class="fact-title">Real Botany</div>
+          <div class="fact-body">NASA confirmed that the potato-growing science in the film is largely accurate. They even attempted to grow potatoes in Mars-like soil as an experiment.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🎬</div>
+          <div class="fact-title">Filmed in Jordan</div>
+          <div class="fact-body">The Martian surface scenes were filmed in Wadi Rum, Jordan — nicknamed "Valley of the Moon" — thanks to its strikingly red, alien landscape.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🏆</div>
+          <div class="fact-title">Golden Globe Winner</div>
+          <div class="fact-body">The film won Best Motion Picture — Musical or Comedy at the Golden Globes, a categorization that surprised many given its sci-fi survival premise.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🎵</div>
+          <div class="fact-title">The Disco Soundtrack</div>
+          <div class="fact-body">Commander Lewis's love of 70s disco music was a deliberate plot device — it became the only music Watney had access to on Mars, creating a beloved running gag.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🔭</div>
+          <div class="fact-title">NASA Partnership</div>
+          <div class="fact-body">NASA consulted extensively on the film and used its release as a platform to announce real discoveries about liquid water on Mars — timed perfectly for opening weekend.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">🚀</div>
+          <div class="fact-title">Matt Damon's Commitment</div>
+          <div class="fact-body">Matt Damon reportedly lost 40+ pounds for the role to portray the gradual physical deterioration of someone surviving on limited calories for over a year.</div>
+        </div>
+
+        <div class="fact-card reveal">
+          <div class="fact-icon">📡</div>
+          <div class="fact-title">Production Speed</div>
+          <div class="fact-body">Ridley Scott completed principal photography in just 70 days — a remarkably fast pace for a major sci-fi production of this scale and visual complexity.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">THE MARTIAN</div>
+    <p class="footer-text">
+      A fan tribute to Ridley Scott's 2015 masterpiece.<br>
+      Starring Matt Damon &bull; Original novel by Andy Weir &bull; Score by Harry Gregson-Williams
+    </p>
+    <p class="footer-disclaimer">
+      This is an unofficial fan page created for personal/educational purposes.<br>
+      The Martian &copy; 2015 20th Century Fox. All rights reserved to their respective owners.
+    </p>
+  </footer>
+
+  <script>
+    // ─── Starfield ───
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+      stars = [];
+      const count = Math.floor((canvas.width * canvas.height) / 3000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.4 + 0.2,
+          alpha: Math.random() * 0.7 + 0.15,
+          speed: Math.random() * 0.003 + 0.001,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function drawStars(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232, 244, 252, ${a})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', () => { resize(); initStars(); });
+    resize();
+    initStars();
+    requestAnimationFrame(drawStars);
+
+    // ─── Scroll reveal ───
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
